@@ -1,0 +1,15 @@
+Movie Theater Day to Day simulation:
+
+1. Ticket counter
+2. Number of (movies) that tickets can be bought for
+3. Customers arrive at random times before show
+4. Customers buy tickets (1-6) to one of the showing movies
+5. When movie sells out or starts, customers wanting tickets for it leave
+
+
+-----------------------
+customers wait in line
+customers try to buy from available or unavailable shows
+customers buy tickets 1 - 6 if tickets are available
+customers leave if selected show has no more tickets
+customers leave after show duration
