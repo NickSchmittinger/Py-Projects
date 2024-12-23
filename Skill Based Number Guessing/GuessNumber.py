@@ -1,46 +1,65 @@
 import random
-import decimal
+from typing import List
 
-#This file was started at 4:00 AM.
-#I will pick it back up later in the day.
+default_min_range = 1
+default_max_range = 100
 
-min_range = 0.0
-max_range = 100.0
+def start_game_print():
+    print("Your guess will evaluate higher or lower for each index of the number.")
+    print("For instance:\n The generated number is 152 and the player guesses 94.")
+    print("The output will be ['is < than 9', 'is > than 4'].\n The actual number has 1 digit more than the guess.")
 
+def generate_num(min: int = default_min_range, max: int = default_max_range) -> int:
+    num: int = random.randint(min, max)
+    print("A new number has been generated!\n It is between: " + str(min) + " and " + str(max))
+    return num
 
-def generate(precision=100):
-    with decimal.localcontext() as ctx:
-        ctx.prec = precision
-        return decimal.Decimal(random.uniform(min_range,max_range))
+def num_to_list(num: int) -> List[int]:
+    return [int(x) for x in str(num)]
 
-def guess(value: str) -> bool: 
-    # print("You got the entire number correct!\n")
-    # confirm = input("Ready for the next number? (yes/no) ")
+def guess(player_value: str) -> bool: 
+    if player_value.isnumeric():
+        guess_num_as_list: List[int] = [int(x) for x in str(player_value)]
+        lists_compared_size = len(guess_num_as_list) - len(generated_num_as_list)
 
-    # print("Good job!")
-    # guess_num = input("" + "\n ")
-    if value.isnumeric():
-        #check if num is correct
-        return True
-    print("Not a number (1-9). ")
-    return False
-
-random_num = generate()
-print("A new number has been generated between: " + str(min_range) + " & " + str(max_range))
-num_str_list = str(random_num).split(".", 1)
-
-num_whole = float(num_str_list[0])
-num_dec = float(num_str_list[1])
-
-num_whole_count = len(num_str_list[0])
-num_dec_count = len(num_str_list[1])
-
-while True:
-    user_input = input("")
-    if user_input == "quit" or user_input == "no":
-        #print score and levels / nums completed
-        break
+        if lists_compared_size > 0:
+            print("Your guess was over the size of the number by " + str(abs(lists_compared_size)) + " digits.")
+            return False
+        elif len(lists_compared_size < 0):
+            print("Your guess was under the size of the number by " + str(abs(lists_compared_size)) + " digits.")
+            return False
+        
+        compared_list: List[str]
+        for i in guess_num_as_list:
+            compared_list.append(compare_nums(generated_num_as_list, guess_num_as_list, str(i)))
+        if False in compared_list:
+            return False
+        else:
+            return True
     else:
+        print("Your guess is not a number.")
+        return False
+
+def compare_nums(original_num: int, player_num: int, index: str) -> bool:
+    if original_num > player_num:
+        print("index " + index + ": is > than " + str(player_num))
+        return False
+    elif original_num < player_num:
+        print("index " + index + ": is < than " + str(player_num))
+        return False
+    else:
+        print("index " + index + ": is = too " + str(player_num))
+        return True
+
+generated_num = generate_num()
+generated_num_as_list = num_to_list(generated_num)
+
+#while True:
+    #user_input = input("")
+    #if user_input == "quit" or user_input == "no":
+        #print score and levels / nums completed
+        #break
+    #else:
         #takes in string, 
         #check input for potential non numeric value / actual guess,
         #returns a string:
@@ -57,4 +76,4 @@ while True:
         #"A new number has been generated between: min_value & max_value, good luck!"
         #If no / quit:
         #"Numbers Completed: (x)\n Total Guesses: (x)\n Final Score: (x)"
-        guess(user_input)
+        #guess(user_input)
