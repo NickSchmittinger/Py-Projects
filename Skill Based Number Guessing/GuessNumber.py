@@ -3,21 +3,50 @@ from typing import List
 
 default_min_range = 1
 default_max_range = 100
+player_min_range = 1
+player_max_range = 100
+current_min_range = 1
+current_max_range = 1
+total_nums_cleared = 0
+total_indexes_cleared = 0
 
-def start_game_print():
+generated_num: int = 0
+generated_num_as_list: str = ""
+remaining_guesses = 5
+
+def start_game():
     print("Your guess will evaluate higher or lower for each index of the number.")
     print("Score includes: total numbers completed, indexes completed, and guess count.")
+    print("You may input your minimum and maximum ranges to start with.\n(minimum must be >= 1)\nand\n(maximum must be >= min + 9).")
     print("Type quit, no, or stop to end the game.")
+    player_setup()
 
-def generate_num(min: int = default_min_range, max: int = default_max_range) -> int:
+def player_setup():
+    chosen_start_range_min = input("Your minimum range (0 if default): ")
+    chosen_start_range_max = input("Your maximum range (0 if default) ")
+    
+    global generated_num
+    global generated_num_as_list
+    
+    generated_num = generate_num(int(chosen_start_range_min), int(chosen_start_range_max)) if (chosen_start_range_min.isnumeric() & chosen_start_range_max.isnumeric()) else generate_num()
+    generated_num_as_list = num_to_list(generated_num)
+
+def generate_num(min: int = default_min_range, max: int = default_max_range, player_input: bool = False) -> int:
+    if min == 0:
+        min = default_min_range
+    if max == 0 | max < min + 9:
+        max = default_max_range
     num: int = random.randint(min, max)
-    print("\nA new number has been generated!\nIt is between: " + str(min) + " and " + str(max) + "\n")
+    if player_input:
+        print("\nA new number has been generated!\nIt is using Player parameters: " + str(min) + " and " + str(max) + "\n")
+    else:
+        print("\nA new number has been generated!\nIt is between: " + str(min) + " and " + str(max) + "\n")
     return num
 
 def num_to_list(num: int) -> List[int]:
     return [int(x) for x in str(num)]
 
-def guess(player_guess: str) -> bool: 
+def guess(player_guess: str) -> bool:
     if player_guess.isnumeric():
         guess_num_as_list: List[int] = [int(x) for x in str(player_guess)]
         lists_compared_size: int = len(guess_num_as_list) - len(generated_num_as_list)
@@ -60,10 +89,7 @@ def compare_nums(original_num: int, player_num: int, index: str) -> bool:
         print("index " + index + ": is " + str(player_num))
         return True
 
-start_game_print()
-generated_num = generate_num()
-generated_num_as_list = num_to_list(generated_num)
-
+start_game()
 
 while True:
     user_input = input("")
